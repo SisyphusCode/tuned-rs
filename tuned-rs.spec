@@ -1,24 +1,30 @@
 Name:           tuned-rs
 Version:        0.1.0
-Release:        1%{?dist}
-Summary:        Blazing fast, pure Rust drop-in replacement for TuneD and PPD
+Release:        2%{?dist}
+Summary:        Rust drop-in replacement for TuneD and Power Profiles Daemon
 
-License:        GPLv3
+License:        GPL-3.0-or-later
 URL:            https://github.com/SisyphusCode/tuned-rs
 Source0:        %{url}/archive/main.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust
-BuildRequires:  systemd-rpm-macros
 BuildRequires:  make
+BuildRequires:  pkgconf-pkg-config
+BuildRequires:  systemd-devel
+BuildRequires:  systemd-rpm-macros
 
 Provides:       tuned = %{version}
 Provides:       power-profiles-daemon = %{version}
 Conflicts:      tuned
+Conflicts:      tuned-ppd
 Conflicts:      power-profiles-daemon
 
 %description
-A memory-safe, asynchronous daemon written in pure Rust that serves as a 1:1 drop-in replacement for the Red Hat TuneD daemon and the GNOME Power Profiles Daemon (PPD). Bypasses the middleman to directly manipulate ACPI states and CPU scaling governors.
+tuned-rs is a memory-safe Rust implementation of the TuneD daemon and the
+Power Profiles D-Bus API (PPD). It exposes com.redhat.tuned for tuned-adm and
+net.hadess.PowerProfiles / org.freedesktop.UPower.PowerProfiles for desktop
+power mode controls.
 
 %prep
 %autosetup -n tuned-rs-main
@@ -39,17 +45,25 @@ cargo build --release
 %systemd_postun_with_restart tuned-rs.service tuned-rs-ppd.service
 
 %files
-/usr/bin/tuned-rs
-/usr/bin/tuned-rs-ppd
-/usr/lib/systemd/system/tuned-rs.service
-/usr/lib/systemd/system/tuned-rs-ppd.service
-/usr/share/dbus-1/system-services/org.freedesktop.UPower.PowerProfiles.service
-/etc/dbus-1/system.d/com.redhat.tuned.conf
-/usr/share/polkit-1/actions/net.hadess.PowerProfiles.policy
-/usr/share/doc/tuned-rs/README.md
-/usr/share/doc/tuned-rs/selinux/tuned-rs.te
-/usr/share/doc/tuned-rs/selinux/tuned-rs.fc
+%license %{_docdir}/tuned-rs/README.md
+%{_docdir}/tuned-rs/selinux/tuned-rs.fc
+%{_docdir}/tuned-rs/selinux/tuned-rs.te
+%{_sbindir}/tuned-rs
+%{_sbindir}/tuned-rs-ppd
+%{_unitdir}/tuned-rs.service
+%{_unitdir}/tuned-rs-ppd.service
+%{_datadir}/dbus-1/system.d/com.redhat.tuned.conf
+%{_datadir}/dbus-1/system.d/org.freedesktop.UPower.PowerProfiles.conf
+%{_datadir}/dbus-1/system-services/net.hadess.PowerProfiles.service
+%{_datadir}/dbus-1/system-services/org.freedesktop.UPower.PowerProfiles.service
+%{_datadir}/polkit-1/actions/com.redhat.tuned.policy
+%{_datadir}/polkit-1/actions/net.hadess.PowerProfiles.policy
+%{_datadir}/polkit-1/actions/org.freedesktop.UPower.PowerProfiles.policy
 
 %changelog
+* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-2
+- Add systemd-devel BuildRequires for libudev (tokio-udev).
+- Fix %%files paths to match sbin install layout and PPD integration files.
+
 * Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-1
 - Initial release of the pure Rust TuneD/PPD replacement.

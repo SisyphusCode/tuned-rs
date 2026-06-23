@@ -23,6 +23,8 @@ test:
 install: build
 	install -D -m 0755 target/release/tuned-rs $(DESTDIR)$(BINDIR)/tuned-rs
 	install -D -m 0644 packaging/tuned-rs.service $(DESTDIR)$(SYSTEMDUNITDIR)/tuned-rs.service
+	install -D -m 0644 packaging/com.redhat.tuned.conf $(DESTDIR)$(DBUSCONFDIR)/com.redhat.tuned.conf
+	install -D -m 0644 packaging/com.redhat.tuned.policy $(DESTDIR)$(POLKITDIR)/com.redhat.tuned.policy
 	install -D -m 0644 selinux/tuned-rs.fc $(DESTDIR)$(DOCDIR)/selinux/tuned-rs.fc
 	install -D -m 0644 selinux/tuned-rs.te $(DESTDIR)$(DOCDIR)/selinux/tuned-rs.te
 	install -D -m 0644 README.md $(DESTDIR)$(DOCDIR)/README.md
