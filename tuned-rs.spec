@@ -1,7 +1,12 @@
 Name:           tuned-rs
 Version:        0.1.0
-Release:        2%{?dist}
+Release:        5%{?dist}
 Summary:        Rust drop-in replacement for TuneD and Power Profiles Daemon
+
+# Plain cargo release builds do not produce useful RPM debuginfo subpackages.
+%global _enable_debug_packages 0
+%global debug_package %{nil}
+%global _debugsource_packages 0
 
 License:        GPL-3.0-or-later
 URL:            https://github.com/SisyphusCode/tuned-rs
@@ -33,7 +38,7 @@ power mode controls.
 cargo build --release
 
 %install
-%make_install
+%make_install BINDIR=%{_sbindir}
 
 %post
 %systemd_post tuned-rs.service tuned-rs-ppd.service
@@ -61,6 +66,15 @@ cargo build --release
 %{_datadir}/polkit-1/actions/org.freedesktop.UPower.PowerProfiles.policy
 
 %changelog
+* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-5
+- Install binaries via %%{_sbindir} so Fedora usr-merge and EL9 both match %%files.
+
+* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-4
+- Disable RPM 6 auto-generated debuginfo subpackages.
+
+* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-3
+- Disable auto-generated debuginfo/debugsource subpackages for Rust release builds.
+
 * Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-2
 - Add systemd-devel BuildRequires for libudev (tokio-udev).
 - Fix %%files paths to match sbin install layout and PPD integration files.
