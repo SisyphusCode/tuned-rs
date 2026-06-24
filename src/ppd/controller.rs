@@ -427,9 +427,18 @@ impl PpdCore {
             return Ok(());
         };
         info!("Platform profile changed: {platform}");
+
+        let active = self.active_profile().await;
+        let base = self.base_profile().await;
+        if !base.is_empty() && active == base && ppd_profile != base {
+            debug!(
+                "Ignoring platform profile '{platform}' because the user-selected base profile is '{base}'"
+            );
+            return Ok(());
+        }
+
         self.clear_holds().await;
-        self.switch_profile(ppd_profile).await?;
-        self.set_base_profile(ppd_profile).await
+        self.switch_profile(ppd_profile).await
     }
 
     pub async fn refresh_battery_state(&self) -> Result<()> {

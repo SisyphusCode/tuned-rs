@@ -1,6 +1,6 @@
 Name:           tuned-rs
 Version:        0.1.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Rust drop-in replacement for TuneD and Power Profiles Daemon
 
 # Plain cargo release builds do not produce useful RPM debuginfo subpackages.
@@ -70,6 +70,11 @@ cargo build --release
 %{_datadir}/polkit-1/actions/org.freedesktop.UPower.PowerProfiles.policy
 
 %changelog
+* Wed Jun 24 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-9
+- Stop firmware platform_profile changes from overriding a user-selected PPD
+  profile and rewriting ppd_base_profile.
+- Default ppd.conf to sysfs_acpi_monitor=false for stable manual profile choice.
+
 * Wed Jun 24 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-8
 - Pick CPU governors and EPP values from hardware-available options.
 - Avoid duplicate cpufreq writes and skip unchanged CPU sysfs values.

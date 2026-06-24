@@ -63,6 +63,34 @@ tuned-adm profile balanced
 - `TUNED_RS_ROOT` — chroot-style prefix for config/state paths (testing)
 - `RUST_LOG` — logging filter, e.g. `RUST_LOG=tuned_rs=debug`
 - `/etc/tuned/tuned-main.conf` — honors `rollback = auto|not_on_exit`
+- `/etc/tuned/ppd.conf` — PPD profile mapping and `sysfs_acpi_monitor`
+
+### Keeping your power profile
+
+Desktop power mode is controlled by `tuned-rs-ppd` and persisted in
+`/etc/tuned/ppd_base_profile`. The underlying TuneD profile name is stored in
+`/etc/tuned/active_profile`.
+
+Set the profile through one of these interfaces and it will survive reboot:
+
+```bash
+# Desktop / power-profiles-daemon API
+busctl call org.freedesktop.UPower.PowerProfiles /org/freedesktop/UPower/PowerProfiles \
+  org.freedesktop.UPower.PowerProfiles SetProfile s performance
+
+# TuneD API
+busctl call com.redhat.tuned /Tuned com.redhat.tuned.control switch_profile s throughput-performance b true
+```
+
+If the profile keeps reverting to `balanced`, check whether firmware is flipping
+`/sys/firmware/acpi/platform_profile` back to `balanced` and disable automatic
+following in `/etc/tuned/ppd.conf`:
+
+```ini
+sysfs_acpi_monitor=false
+```
+
+Then restart `tuned-rs-ppd`.
 
 Rollback state is persisted to `/var/lib/tuned-rs/rollback.json` and recovered after crashes.
 
