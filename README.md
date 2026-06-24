@@ -29,6 +29,18 @@ make test
 Install conflicts with the Python `tuned` package because both services claim
 `com.redhat.tuned` on the system bus.
 
+### From COPR (Fedora, CentOS Stream, RHEL 10 / Rocky 10 / Alma 10)
+
+```bash
+sudo dnf copr enable sisyphuscode/tuned-rs
+sudo dnf install tuned-rs
+```
+
+On RHEL 10 and compatible rebuilds, enable EPEL 10 first if it is not already
+enabled.
+
+### From source
+
 ```bash
 sudo systemctl stop tuned
 sudo make install

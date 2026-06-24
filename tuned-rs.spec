@@ -1,6 +1,6 @@
 Name:           tuned-rs
 Version:        0.1.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Rust drop-in replacement for TuneD and Power Profiles Daemon
 
 # Plain cargo release builds do not produce useful RPM debuginfo subpackages.
@@ -66,6 +66,9 @@ cargo build --release
 %{_datadir}/polkit-1/actions/org.freedesktop.UPower.PowerProfiles.policy
 
 %changelog
+* Wed Jun 24 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-6
+- Add RHEL 10 / EPEL 10 / CentOS Stream 10 COPR chroot support.
+
 * Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-5
 - Install binaries via %%{_sbindir} so Fedora usr-merge and EL9 both match %%files.
 
