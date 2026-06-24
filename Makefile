@@ -5,8 +5,10 @@ DBUSCONFDIR ?= /usr/share/dbus-1/system.d
 DBUSSERVICEDIR ?= /usr/share/dbus-1/system-services
 POLKITDIR ?= /usr/share/polkit-1/actions
 DOCDIR ?= /usr/share/doc/tuned-rs
+ETCTUNEDDIR ?= /etc/tuned
+PROFILEDIR ?= /usr/lib/tuned/profiles
 
-.PHONY: all build test check install install-ppd
+.PHONY: all build test check install install-ppd install-config install-profiles
 
 all: build
 
@@ -20,7 +22,7 @@ check:
 test:
 	cargo test
 
-install: build
+install: build install-config install-profiles
 	install -D -m 0755 target/release/tuned-rs $(DESTDIR)$(BINDIR)/tuned-rs
 	install -D -m 0644 packaging/tuned-rs.service $(DESTDIR)$(SYSTEMDUNITDIR)/tuned-rs.service
 	install -D -m 0644 packaging/com.redhat.tuned.conf $(DESTDIR)$(DBUSCONFDIR)/com.redhat.tuned.conf
@@ -29,6 +31,17 @@ install: build
 	install -D -m 0644 selinux/tuned-rs.te $(DESTDIR)$(DOCDIR)/selinux/tuned-rs.te
 	install -D -m 0644 README.md $(DESTDIR)$(DOCDIR)/README.md
 	$(MAKE) install-ppd
+
+install-config:
+	install -d $(DESTDIR)$(ETCTUNEDDIR)/profiles
+	install -D -m 0644 packaging/tuned-main.conf $(DESTDIR)$(ETCTUNEDDIR)/tuned-main.conf
+	install -D -m 0644 packaging/ppd.conf $(DESTDIR)$(ETCTUNEDDIR)/ppd.conf
+
+install-profiles:
+	install -d $(DESTDIR)$(PROFILEDIR)
+	cp -a profiles/. $(DESTDIR)$(PROFILEDIR)/
+	find $(DESTDIR)$(PROFILEDIR) -type d -exec chmod 0755 {} +
+	find $(DESTDIR)$(PROFILEDIR) -type f -exec chmod 0644 {} +
 
 install-ppd: build
 	install -D -m 0755 target/release/tuned-rs-ppd $(DESTDIR)$(BINDIR)/tuned-rs-ppd

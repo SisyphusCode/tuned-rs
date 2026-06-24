@@ -11,8 +11,8 @@ pub const PROFILE_FILE: &str = "tuned.conf";
 pub const DEFAULT_PROFILE: &str = "balanced";
 pub const ROLLBACK_FILE: &str = "/var/lib/tuned-rs/rollback.json";
 
-pub const SYSTEM_PROFILES_DIR: &str = "/usr/lib/tuned";
-pub const USER_PROFILES_DIR: &str = "/etc/tuned";
+pub const SYSTEM_PROFILES_DIR: &str = "/usr/lib/tuned/profiles";
+pub const USER_PROFILES_DIR: &str = "/etc/tuned/profiles";
 
 pub const ROLLBACK_AUTO: &str = "auto";
 pub const ROLLBACK_NOT_ON_EXIT: &str = "not_on_exit";

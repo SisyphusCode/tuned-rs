@@ -1,6 +1,6 @@
 Name:           tuned-rs
 Version:        0.1.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Rust drop-in replacement for TuneD and Power Profiles Daemon
 
 # Plain cargo release builds do not produce useful RPM debuginfo subpackages.
@@ -50,6 +50,10 @@ cargo build --release
 %systemd_postun_with_restart tuned-rs.service tuned-rs-ppd.service
 
 %files
+%dir %ghost %{_sysconfdir}/tuned/profiles
+%config(noreplace) %{_sysconfdir}/tuned/tuned-main.conf
+%config(noreplace) %{_sysconfdir}/tuned/ppd.conf
+%{_prefix}/lib/tuned/profiles
 %license %{_docdir}/tuned-rs/README.md
 %{_docdir}/tuned-rs/selinux/tuned-rs.fc
 %{_docdir}/tuned-rs/selinux/tuned-rs.te
@@ -66,6 +70,11 @@ cargo build --release
 %{_datadir}/polkit-1/actions/org.freedesktop.UPower.PowerProfiles.policy
 
 %changelog
+* Wed Jun 24 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-7
+- Ship ppd.conf, tuned-main.conf, and default TuneD profiles required for a
+  standalone install without the Python tuned package.
+- Fix profile search paths to match upstream TuneD layout.
+
 * Wed Jun 24 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-6
 - Add RHEL 10 / EPEL 10 / CentOS Stream 10 COPR chroot support.
 

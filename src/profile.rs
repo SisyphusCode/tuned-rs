@@ -302,8 +302,8 @@ mod tests {
     #[test]
     fn later_profile_dir_overrides_name() {
         let root = TempDir::new().unwrap();
-        let system = root.path().join("usr/lib/tuned");
-        let user = root.path().join("etc/tuned");
+        let system = root.path().join("usr/lib/tuned/profiles");
+        let user = root.path().join("etc/tuned/profiles");
         for (base, summary) in [(&system, "system"), (&user, "custom")] {
             let profile_dir = base.join("balanced");
             fs::create_dir_all(&profile_dir).unwrap();
