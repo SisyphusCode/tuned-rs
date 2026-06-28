@@ -1,6 +1,6 @@
 Name:           tuned-rs
 Version:        0.1.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Rust drop-in replacement for TuneD and Power Profiles Daemon
 
 # Plain cargo release builds do not produce useful RPM debuginfo subpackages.
@@ -21,6 +21,12 @@ BuildRequires:  systemd-rpm-macros
 
 Provides:       tuned = %{version}
 Provides:       power-profiles-daemon = %{version}
+# Required to satisfy cosmic-settings ppd-service dependency
+Provides:       ppd-service
+# Required to allow dnf swap to automatically replace existing providers
+Obsoletes:      power-profiles-daemon < %{version}
+Obsoletes:      tuned-ppd < %{version}
+
 Conflicts:      tuned
 Conflicts:      tuned-ppd
 Conflicts:      power-profiles-daemon
@@ -70,6 +76,9 @@ cargo build --release
 %{_datadir}/polkit-1/actions/org.freedesktop.UPower.PowerProfiles.policy
 
 %changelog
+* Sun Jun 28 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-10
+- Added Provides: ppd-service and Obsoletes for PPD/tuned-ppd to fix dependency resolution.
+
 * Wed Jun 24 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-9
 - Stop firmware platform_profile changes from overriding a user-selected PPD
   profile and rewriting ppd_base_profile.
@@ -88,17 +97,4 @@ cargo build --release
 - Add RHEL 10 / EPEL 10 / CentOS Stream 10 COPR chroot support.
 
 * Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-5
-- Install binaries via %%{_sbindir} so Fedora usr-merge and EL9 both match %%files.
-
-* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-4
-- Disable RPM 6 auto-generated debuginfo subpackages.
-
-* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-3
-- Disable auto-generated debuginfo/debugsource subpackages for Rust release builds.
-
-* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-2
-- Add systemd-devel BuildRequires for libudev (tokio-udev).
-- Fix %%files paths to match sbin install layout and PPD integration files.
-
-* Tue Jun 23 2026 Kenneth Glowner <klglownerjr@usmarinecorps.vet> - 0.1.0-1
-- Initial release of the pure Rust TuneD/PPD replacement.
+- Install binaries via %{_sbindir} so Fedora usr-merge and EL9 both match %files.
